@@ -238,6 +238,14 @@ char menu(){
 
 int CheckToMove(char f[HEIGHT][WIDTH],int currentBlock,int blockRotate, int blockY, int blockX){
 	// user code
+	int a,b;
+	for(a=0;a<4;a++)
+		for(b=0;b<4;b++)
+			if((*(*(*(*(block+currentBlock)+blockRotate)+a)+b)) && 
+				!(blockY+a<0) && 
+				( *(*(f+blockY+a)+blockX+b) || blockY+a>=HEIGHT || blockX+b<0 || blockX+b>=WIDTH))	
+				return 0;
+	return 1;
 }
 
 void DrawChange(char f[HEIGHT][WIDTH],int command,int currentBlock,int blockRotate, int blockY, int blockX){
@@ -246,18 +254,65 @@ void DrawChange(char f[HEIGHT][WIDTH],int command,int currentBlock,int blockRota
 	//1. 이전 블록 정보를 찾는다. ProcessCommand의 switch문을 참조할 것
 	//2. 이전 블록 정보를 지운다. DrawBlock함수 참조할 것.
 	//3. 새로운 블록 정보를 그린다. 
+	int drawFlag = 0, a, b;
+
+	switch(command){
+		case QUIT: break;
+		case KEY_UP: 
+			for(a=0;a<4;a++) for(b=0;b<4;b++) if( *(*(*(*(block+currentBlock)+(blockRotate-1)%4)+a)+b) && blockY+a>=0 ) *(*(f+blockY+a)+blockX+b) = '.';
+			drawFlag = 1;
+			break;
+		case KEY_DOWN: 
+			for(a=0;a<4;a++) for(b=0;b<4;b++) if( *(*(*(*(block+currentBlock)+blockRotate)+a)+b) && blockY+a>=0 ) *(*(f+blockY+a-1)+blockX+b) = '.';
+			drawFlag = 1;
+			break;
+		case KEY_RIGHT:
+			for(a=0;a<4;a++) for(b=0;b<4;b++) if( *(*(*(*(block+currentBlock)+blockRotate)+a)+b) && blockY+a>=0 ) *(*(f+blockY+a)+blockX+b-1) = '.';
+			drawFlag = 1;
+			break;
+		case KEY_LEFT:
+			for(a=0;a<4;a++) for(b=0;b<4;b++) if( *(*(*(*(block+currentBlock)+blockRotate)+a)+b) && blockY+a>=0 ) *(*(f+blockY+a)+blockX+b+1) = '.';
+			drawFlag = 1;
+			break;
+		default:
+			break;
+	}
+
+	if(drawFlag) DrawBlock(blockY,blockX,currentBlock,blockRotate,' ');
 }
 
 void BlockDown(int sig){
 	// user code
 
 	//강의자료 p26-27의 플로우차트를 참고한다.
+
+	if(CheckToMove(field,nextBlock[0],blockRotate,blockY+1,blockX)) {
+		++blockY;
+		DrawField();
+		DrawChange(field,KEY_DOWN,nextBlock[0],blockRotate,blockY,blockX);
+		return;
+	}
+
+	if(!(blockY+1)) gameOver=TRUE;
+	AddBlockToField(field,nextBlock[0],blockRotate,blockY,blockX);
+	score += DeleteLine(field);
+	PrintScore(score);
+	*nextBlock = *(nextBlock+1);
+	*(nextBlock+1) = rand()%7;
+	DrawNextBlock(nextBlock);
+	blockX = WIDTH/2-2;
+	blockY = -1;
+	blockRotate = 0;
+	DrawField();
 }
 
 void AddBlockToField(char f[HEIGHT][WIDTH],int currentBlock,int blockRotate, int blockY, int blockX){
 	// user code
 
 	//Block이 추가된 영역의 필드값을 바꾼다.
+
+	int a,b;
+	for(a=0;a<4;a++) for(b=0;b<4;b++) if( *(*(*(*(block+currentBlock)+blockRotate)+a)+b) ) *(*(f+blockY+a)+blockX+b) = 1;
 }
 
 int DeleteLine(char f[HEIGHT][WIDTH]){
@@ -265,12 +320,28 @@ int DeleteLine(char f[HEIGHT][WIDTH]){
 
 	//1. 필드를 탐색하여, 꽉 찬 구간이 있는지 탐색한다.
 	//2. 꽉 찬 구간이 있으면 해당 구간을 지운다. 즉, 해당 구간으로 필드값을 한칸씩 내린다.
+
+	int line = 0, flg, a, b;
+
+	for(a=0;a<WIDTH;a++) for(b=0;b<HEIGHT;b++) {
+		if( *(*(f+b)+a) && *(*(f+b)+a+1) ) {
+			if(!(WIDTH-2-a)) {
+				++line;
+				flg = b;
+				for(int x=flg-1;!x<0;x--) for(int y=0;y<WIDTH;y++) *(*(f+x+1)+y) = *(*(f+x)+y);
+			}
+			continue;
+		} 
+		else break;
+	}
+	return 100*line*line;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 void DrawShadow(int y, int x, int blockID,int blockRotate){
 	// user code
+
 }
 
 void createRankList(){
