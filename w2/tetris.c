@@ -15,6 +15,7 @@ int main(){
 		clear();
 		switch(menu()){
 		case MENU_PLAY: play(); break;
+		case MENU_RANK: rank(); break;
 		case MENU_EXIT: exit=1; break;
 		default: break;
 		}
@@ -373,18 +374,110 @@ void DrawShadow(int y, int x, int blockID,int blockRotate) {
 
 void createRankList(){
 	// user code
+	
+	userlist.node = NULL;
+	userlist.totalUser = 0;
+
+	char name[NAMELEN];
+	int score,i=0;
+	Usernode *n = userlist.node;
+	Usernode *newUser = NULL;
+	FILE *f = fopen("rank.txt","r");
+	if(!f) {
+        perror("Error opening rank.txt");
+        return;
+    }
+
+	while(fscanf(f, "%s %d", name, &score)) {
+		userlist.totalUser++;
+		newUser = (Usernode*)malloc(sizeof(Usernode));
+		strcpy(newUser->name, name);
+		newUser->score = score;
+		n = newUser;
+		n = n->next;
+	}
+	n = NULL;
+	fclose(f);
 }
 
 void rank(){
 	// user code
+	char com;
+	do{
+		clear();
+		printw("1.\tlist ranks from X to Y\n");
+        printw("2.\tlist ranks by a specific name\n");
+        printw("3.\tdelete a specific rank\n");
+		com = wgetch(stdscr);
+	}while(com<'1'||com>'3');
+
+	echo();
+	int x,idx,y=-1;
+	Usernode *n;
+	switch(com) {
+		case '2':
+		case '3':
+		case '1':
+			createRankList();
+			printw("X: ");
+			scanw("%d", &x);
+			printw("Y: ");
+			scanw("%d", &y);
+			if (x<0) x = 1;
+			if (x<0) y = userlist.totalUser; //TODO que es el head node
+			noecho();
+
+			printw("\t\tname\t\t|\tscore\n");
+			printw("--------------------------------------\n");
+			if(x>y){
+				printw("search failure: no rank in the list\n");
+				break;
+			}
+			n = userlist.node;
+			while(n!=NULL){
+				for(idx=userlist.totalUser;idx>y;idx--) {
+					n = n->next;
+				}
+				for(;idx>=x;idx--) {
+					printw(" %-19s| %-12d\n", n->name, n->score);
+				}
+			}
+			break;
+	}
+	noecho();
+	getch();
 }
 
 void writeRankFile(){
 	// user code
+	FILE *f = fopen("rank.txt", "w");
+	Usernode *n = userlist.node;
+	while(n) {
+		fprintf(f, "%s %d\n", n->name, n->score);
+		n = n->next;
+	}
+	fclose(f);
 }
 
 void newRank(int score){
 	// user code
+	clear();
+	echo();
+	char name[NAMELEN];
+	printw("your name: ");
+    scanw("%s", name);
+    noecho();
+	Usernode *newUser = (Usernode*)malloc(sizeof(Usernode));
+	Usernode *n = userlist.node;
+	newUser->name[0] = '\0'; //End of string.
+	strcpy(newUser->name, name);
+	newUser->score = score;
+	
+	if(!n) {userlist.node = newUser;return;}
+
+	while(n->next && n->next->score<score) n = n->next;
+	newUser->next = n->next;
+	n->next = newUser;
 }
 
 void DrawRecommend(int y, int x, int blockID,int blockRotate){
