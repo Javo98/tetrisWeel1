@@ -374,29 +374,40 @@ void DrawShadow(int y, int x, int blockID,int blockRotate) {
 
 void createRankList(){
 	// user code
-	
+
 	userlist.node = NULL;
 	userlist.totalUser = 0;
 
 	char name[NAMELEN];
 	int score,i=0;
+	
 	Usernode *n = userlist.node;
 	Usernode *newUser = NULL;
 	FILE *f = fopen("rank.txt","r");
 	if(!f) {
-        perror("Error opening rank.txt");
+        printf("Error opening rank.txt");
         return;
     }
 
-	while(fscanf(f, "%s %d", name, &score)) {
+	while(!feof(f)) {
+		fscanf(f, "%s %d", name, &score);
 		userlist.totalUser++;
 		newUser = (Usernode*)malloc(sizeof(Usernode));
 		strcpy(newUser->name, name);
 		newUser->score = score;
-		n = newUser;
-		n = n->next;
+		//printw("Nombre: %s\n",newUser->name);
+		*n = newUser;
+		*n = n->next;
 	}
+	
 	n = NULL;
+
+	Usernode *a = userlist.node;
+	printw("NombreLeido: %p\n",a);
+	while(a) {
+		printw("NombreLeido: %s\n",a->name);
+		a = a->next;
+	}
 	fclose(f);
 }
 
@@ -427,7 +438,7 @@ void rank(){
 			if (x<0) y = userlist.totalUser; //TODO que es el head node
 			noecho();
 
-			printw("\t\tname\t\t|\tscore\n");
+			printw("\tname\t|\tscore\n");
 			printw("--------------------------------------\n");
 			if(x>y){
 				printw("search failure: no rank in the list\n");
