@@ -241,7 +241,7 @@ int CheckToMove(char f[HEIGHT][WIDTH],int currentBlock,int blockRotate, int bloc
     // user code
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            if (*(*(*(*(block+currentBlock)+blockRotate)+i)+j) && (*(*(f+blockY + i)+blockX + j) || (blockX + j >= WIDTH) || (blockX + j < 0) || (blockY + i >= HEIGHT) || (blockY + i < 0)) )
+            if (*(*(*(*(block+currentBlock)+blockRotate)+i)+j) && ( *(*(f+blockY+i)+blockX+j) || (blockX+j>=WIDTH) || (blockX+j<0) || (blockY+i>=HEIGHT) || (blockY+i<0)) )
                 return 0;
     return 1;
 }
@@ -300,17 +300,12 @@ void BlockDown(int sig){
     int i=0;
 
     if(CheckToMove(field,*nextBlock,blockRotate,++blockY,blockX)) {
-		score+=10;
-		PrintScore(score);
 		DrawField();
 		DrawChange(field,KEY_DOWN,*nextBlock,blockRotate,blockY,blockX);
         timed_out = 0;
 		return;
 	}
 	blockY--;
-	printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
-	score+=100;
-	PrintScore(score);
 
     score += AddBlockToField(field,*nextBlock,blockRotate,blockY,blockX);
     if(!(gameOver=(blockY==-1))) {
@@ -351,18 +346,21 @@ int DeleteLine(char f[HEIGHT][WIDTH]) {
     //1. 필드를 탐색하여, 꽉 찬 구간이 있는지 탐색한다.
     int line,i,j,x,y;
 	line=i=j=0;
+	bool cont = 0;
 
     for (;i<HEIGHT;i++) {
-        for (;j<WIDTH;j++) if(!(*(*(f+i)+j))) continue;
-
+		cont=0;
+		for (j=0;j<WIDTH;j++) if(!(*(*(f+i)+j))) {cont=1;break;}
+        
+        if(cont) continue;
         line++;
         for (y=i;y>=1;y--) for (x=0;x<WIDTH;x++) *(*(f+y)+x) = *(*(f+y-1)+x);
         for (x=0;x<WIDTH;x++) *(*(f)+x)=0;
         i--;
     }
     //2. 꽉 찬 구간이 있으면 해당 구간을 지운다. 즉, 해당 구간으로 필드값을 한칸씩 내린다.
-    line*=10;
-
+    
+	line*=10;
     return line*line;
 }
 
