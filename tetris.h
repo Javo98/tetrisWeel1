@@ -232,9 +232,9 @@ void DrawField();
  *		  (int) 블럭의 회전 횟수
  *		  (int) 블럭의 Y좌표
  *		  (int) 블럭의 X좌표
- *	return	: none
+ *	return	: int
  ***********************************************************/
-void AddBlockToField(char f[HEIGHT][WIDTH],int currentBlock,int blockRotate, int blockY, int blockX);
+int AddBlockToField(char f[HEIGHT][WIDTH],int currentBlock,int blockRotate, int blockY, int blockX);
 
 /***********************************************************
  *	완전히 채워진 Line을 삭제하고 점수를 매겨준다.
@@ -351,6 +351,16 @@ int recommend(RecNode *root);
  *	return	: none
  ***********************************************************/
 void recommendedPlay();
+
+/* Checking if a block can be moved down, and if it can, it increments the Ylength variable. 
+When the block can't be moved down anymore, the code returns the Ylength variable. */
+int yDistance(int y, int x, int blockID, int blockRotate);
+
+/* 
+This function deletes a block from the screen. It takes in the block's y and x coordinates, 
+as well as the block's type and rotation, and then loops through the block's 4x4 grid. 
+If it finds a non-empty cell, it moves the cursor to that cell and prints a dot. */
+void delBlock(int y, int x, int currentBlock, int blockRotate);
 
 
 #endif
