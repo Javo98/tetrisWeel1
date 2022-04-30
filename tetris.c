@@ -359,7 +359,6 @@ int DeleteLine(char f[HEIGHT][WIDTH]) {
         i--;
     }
     //2. 꽉 찬 구간이 있으면 해당 구간을 지운다. 즉, 해당 구간으로 필드값을 한칸씩 내린다.
-    
 	line*=10;
     return line*line;
 }
