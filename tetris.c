@@ -315,6 +315,7 @@ void BlockDown(int sig){
         }
         *(nextBlock+BLOCK_NUM-1) = rand()%NUM_OF_SHAPE;
         DrawNextBlock(nextBlock);
+		score+=155;
         PrintScore(score);
 
         blockY=-1;
