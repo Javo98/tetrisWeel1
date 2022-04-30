@@ -298,9 +298,7 @@ void BlockDown(int sig){
     // user code
     
     int i=0;
-
-	score+=155;
-	PrintScore(score);
+	
     if(CheckToMove(field,*nextBlock,blockRotate,++blockY,blockX)) {
 		DrawField();
 		DrawChange(field,KEY_DOWN,*nextBlock,blockRotate,blockY,blockX);
@@ -308,6 +306,9 @@ void BlockDown(int sig){
 		return;
 	}
 	blockY--;
+
+	score+=155;
+	PrintScore(score);
 
     score += AddBlockToField(field,*nextBlock,blockRotate,blockY,blockX);
     if(!(gameOver=(blockY==-1))) {
