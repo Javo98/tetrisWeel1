@@ -298,11 +298,10 @@ void BlockDown(int sig){
     // user code
     
     int i=0;
-	
-	score+=155;
-	PrintScore(score);
 
     if(CheckToMove(field,*nextBlock,blockRotate,++blockY,blockX)) {
+		score+=10;
+		PrintScore(score);
 		DrawField();
 		DrawChange(field,KEY_DOWN,*nextBlock,blockRotate,blockY,blockX);
         timed_out = 0;
@@ -310,7 +309,7 @@ void BlockDown(int sig){
 	}
 	blockY--;
 
-	score+=155;
+	score+=100;
 	PrintScore(score);
 
     score += AddBlockToField(field,*nextBlock,blockRotate,blockY,blockX);
