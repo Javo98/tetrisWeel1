@@ -299,6 +299,9 @@ void BlockDown(int sig){
     
     int i=0;
 	
+	score+=155;
+	PrintScore(score);
+
     if(CheckToMove(field,*nextBlock,blockRotate,++blockY,blockX)) {
 		DrawField();
 		DrawChange(field,KEY_DOWN,*nextBlock,blockRotate,blockY,blockX);
