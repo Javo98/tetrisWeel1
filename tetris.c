@@ -273,8 +273,8 @@ void DrawChange(char f[HEIGHT][WIDTH],int command,int currentBlock,int blockRota
 		break;
 
 	case KEY_UP:
-		delBlock(blockY,blockX,currentBlock, (blockRotate+3)%4 );
-		delBlock(yDistance(blockY,blockX,currentBlock, (blockRotate+3)%4 ), blockX, currentBlock, (blockRotate+3)%4 );
+		delBlock(blockY,blockX,currentBlock, (blockRotate+1)%4 );
+		delBlock(yDistance(blockY,blockX,currentBlock, (blockRotate+1)%4 ), blockX, currentBlock, (blockRotate+1)%4 );
 		break;
 
 	case KEY_LEFT:
@@ -308,7 +308,7 @@ void BlockDown(int sig){
 		return;
 	}
 	blockY--;
-
+	printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
 	score+=100;
 	PrintScore(score);
 
