@@ -391,13 +391,17 @@ void createRankList(){
 
 	while(!feof(f)) {
 		fscanf(f, "%s %d", name, &score);
+
 		userlist.totalUser++;
 		newUser = (Usernode*)malloc(sizeof(Usernode));
 		strcpy(newUser->name, name);
 		newUser->score = score;
+		newUser->next = NULL;
 		//printw("Nombre: %s\n",newUser->name);
-		*n = newUser;
-		*n = n->next;
+
+		if(userlist.node!=NULL) {userlist.node = newUser; break;}
+		n->next = newUser;
+		n = newUser;
 	}
 	
 	n = NULL;
