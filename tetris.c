@@ -241,7 +241,7 @@ int CheckToMove(char f[HEIGHT][WIDTH],int currentBlock,int blockRotate, int bloc
     // user code
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            if (*(*(*(*(block+currentBlock)+blockRotate)+i)+j) & (*(*(f+blockY + i)+blockX + j) || (blockX + j >= WIDTH) || (blockX + j < 0) || (blockY + i >= HEIGHT) || (blockY + i < 0)) )
+            if (*(*(*(*(block+currentBlock)+blockRotate)+i)+j) & (*(*(f+blockY + i)+blockX + j) || (blockX + j >= WIDTH) || (blockX + j < 0) || (blockY + i > HEIGHT) || (blockY + i < 0)) )
                 return 0;
     return 1;
 }
