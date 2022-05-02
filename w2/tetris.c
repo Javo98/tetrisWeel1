@@ -4,6 +4,7 @@ static struct sigaction act, oact;
 
 int main(){
 	int exit=0;
+	createRankList();
 
 	initscr();
 	noecho();
@@ -23,6 +24,7 @@ int main(){
 
 	endwin();
 	system("clear");
+	writeRankFile();
 	return 0;
 }
 
@@ -382,37 +384,28 @@ void createRankList(){
 	int score,i=0;
 	
 	Usernode *n = userlist.node;
+	if(n) while(n->next){n=n->next;}
 	Usernode *newUser = NULL;
 	FILE *f = fopen("rank.txt","r");
 	if(!f) {
         printf("Error opening rank.txt");
         return;
     }
-
 	while(!feof(f)) {
 		fscanf(f, "%s %d", name, &score);
-
+		
 		userlist.totalUser++;
 		newUser = (Usernode*)malloc(sizeof(Usernode));
 		strcpy(newUser->name, name);
 		newUser->score = score;
 		newUser->next = NULL;
 		//printw("Nombre: %s\n",newUser->name);
-
-		if(userlist.node!=NULL) {userlist.node = newUser; break;}
+		if(n==NULL) {userlist.node = newUser;n=newUser;continue;}
 		n->next = newUser;
 		n = newUser;
 	}
-	
-	n = NULL;
-
-	Usernode *a = userlist.node;
-	printw("NombreLeido: %p\n",a);
-	while(a) {
-		printw("NombreLeido: %s\n",a->name);
-		a = a->next;
-	}
 	fclose(f);
+	return ;
 }
 
 void rank(){
@@ -427,36 +420,36 @@ void rank(){
 	}while(com<'1'||com>'3');
 
 	echo();
-	int x,idx,y=-1;
+	int x,idx=1,y=-1;
 	Usernode *n;
 	switch(com) {
-		case '2':
-		case '3':
 		case '1':
-			createRankList();
 			printw("X: ");
+			x=-1;
 			scanw("%d", &x);
 			printw("Y: ");
 			scanw("%d", &y);
 			if (x<0) x = 1;
-			if (x<0) y = userlist.totalUser; //TODO que es el head node
+			if (y<0) y = userlist.totalUser;
 			noecho();
 
 			printw("\tname\t|\tscore\n");
 			printw("--------------------------------------\n");
 			if(x>y){
-				printw("search failure: no rank in the list\n");
+				printw("search failure: no rank in the list between x:%i and y:%i\n",x,y);
 				break;
 			}
+
 			n = userlist.node;
 			while(n!=NULL){
-				for(idx=userlist.totalUser;idx>y;idx--) {
-					n = n->next;
-				}
-				for(;idx>=x;idx--) {
-					printw(" %-19s| %-12d\n", n->name, n->score);
-				}
+				if (x <= idx && idx <= y) printw(" %-19s| %-12d\n", n->name, n->score);
+				idx++;
+				n = n->next;
 			}
+			break;
+		case '2':
+			break;
+		case '3':
 			break;
 	}
 	noecho();
@@ -467,8 +460,10 @@ void writeRankFile(){
 	// user code
 	FILE *f = fopen("rank.txt", "w");
 	Usernode *n = userlist.node;
+	printw("AAAAAAAAAAAa\n");
 	while(n) {
 		fprintf(f, "%s %d\n", n->name, n->score);
+		printw("%s %d\n", n->name, n->score);
 		n = n->next;
 	}
 	fclose(f);
@@ -482,15 +477,16 @@ void newRank(int score){
 	printw("your name: ");
     scanw("%s", name);
     noecho();
+
 	Usernode *newUser = (Usernode*)malloc(sizeof(Usernode));
-	Usernode *n = userlist.node;
 	newUser->name[0] = '\0'; //End of string.
 	strcpy(newUser->name, name);
 	newUser->score = score;
 	
+	Usernode *n = userlist.node;
 	if(!n) {userlist.node = newUser;return;}
 
-	while(n->next && n->next->score<score) n = n->next;
+	while(n->next && n->next->score>score) n = n->next;
 	newUser->next = n->next;
 	n->next = newUser;
 }
