@@ -375,5 +375,16 @@ as well as the block's type and rotation, and then loops through the block's 4x4
 If it finds a non-empty cell, it moves the cursor to that cell and prints a dot. */
 void delBlock(int y, int x, int currentBlock, int blockRotate);
 
+/* This function prints only the ranking where it matches the name entered as input.
+Input: (char*) name
+Output: none */
+void findByName(char *name);
+
+/* This function removes a node from the linked list.
+Input: int del, index of the node in the linked list (starting from 1) 
+Output: none*/
+void deleteFromUserlist(int del);
+
+
 
 #endif

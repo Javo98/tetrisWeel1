@@ -411,6 +411,7 @@ void createRankList(){
 void rank(){
 	// user code
 	char com;
+	char name[NAMELEN];
 	do{
 		clear();
 		printw("1.\tlist ranks from X to Y\n");
@@ -448,19 +449,58 @@ void rank(){
 			}
 			break;
 		case '2':
+			echo();
+			printw("input the name: ");
+            scanw("%s", name);
+            noecho();
+			findByName(name);
 			break;
 		case '3':
+			echo();
+            printw("Input the rank: ");
+            scanw("%d", &x);
+            noecho();
+            deleteFromUserlist(x);
 			break;
 	}
 	noecho();
 	getch();
 }
 
+void findByName(char *name) {
+	bool r = false;
+	printw("        name        |    score\n");
+    printw("---------------------------------------\n");
+	for(Usernode *n = userlist.node;n;n=n->next) {
+		if(strcmp(n->name,name)) continue;
+		r = true;
+		printw(" %-19s| %-12d\n", n->name, n->score);
+	}
+	if(!r) printw("search failure: no rank in the list\n");
+}
+
+void deleteFromUserlist(int del) {
+	Usernode *n = userlist.node;
+	if(del<1 || del >userlist.totalUser) {printw("search failure: no rank in the list\n");return;}
+
+	if((del--)==1) {
+		userlist.node = n->next;
+		free(n);
+	}
+	else {
+		while(--del) n=n->next;
+		Usernode *tmp = n->next;
+		n->next = tmp->next;
+		free(tmp);
+	}
+
+	printw("result: the rank deleted\n");
+}
+
 void writeRankFile(){
 	// user code
 	FILE *f = fopen("rank.txt", "w");
 	Usernode *n = userlist.node;
-	printw("AAAAAAAAAAAa\n");
 	while(n) {
 		fprintf(f, "%s %d\n", n->name, n->score);
 		printw("%s %d\n", n->name, n->score);
