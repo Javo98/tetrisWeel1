@@ -162,7 +162,7 @@ bool recommended = 0;
 RecNode *recRoot;
 Userlist userlist;
 
-time_t stime, ftime;
+time_t s_time, ftime;
 long long space=0;
 
 /***********************************************************

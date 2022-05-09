@@ -656,7 +656,7 @@ void automaticBlockDown(int sig) {
 
 void recommendedPlay() {
     int command;
-	stime=time(NULL);
+	s_time=time(NULL);
     clear();
     act.sa_handler = automaticBlockDown;
     sigaction(SIGALRM,&act,&oact);
@@ -681,7 +681,7 @@ void recommendedPlay() {
         }
 
         ftime = time(NULL);
-        double lenght = (double)difftime(ftime,stime);
+        double lenght = (double)difftime(ftime,s_time);
 
         move(4,WIDTH+30);
         printw("time\t\t:%10.2f s",lenght);
