@@ -686,9 +686,9 @@ void recommendedPlay() {
         move(4,WIDTH+30);
         printw("time\t\t:%10.2f s",lenght);
         move(5,WIDTH+30);
-        printw("score per time\t:%10.2f score/s",score/lenght);
-        move(7,WIDTH+30);
         printw("space\t\t:%10.2f KB",(double)space/1024);
+        move(7,WIDTH+30);
+        printw("score per time\t:%10.2f score/s",score/lenght);
         move(8,WIDTH+30);
         printw("space per time\t:%10.2f KB/s",(double)space/(lenght*1024));
         move(10,WIDTH+30);
